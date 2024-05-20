@@ -9,3 +9,4 @@ resp = requests.post(
 
 for content in resp.iter_content():
     print(content.decode("utf-8"), end="", flush=True)
+
