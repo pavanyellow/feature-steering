@@ -14,6 +14,7 @@ from fairscale.nn.model_parallel.layers import (
     VocabParallelEmbedding,
 )
 from torch import nn
+import requests
 
 
 @dataclass
