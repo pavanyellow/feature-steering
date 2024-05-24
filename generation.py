@@ -220,7 +220,6 @@ def sample_top_p(probs, p):
     Args:
         probs (torch.Tensor): Probability distribution tensor.
         p (float): Probability threshold for top-p sampling.
-1234567890-`
     Returns:
         torch.Tensor: Sampled token indices.
 

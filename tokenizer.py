@@ -100,8 +100,8 @@ class Tokenizer:
         self,
         s: str,
         *,
-        bos: bool = False,
-        eos: bool = False,
+        bos: bool ,
+        eos: bool,
         allowed_special: Union[Literal["all"], AbstractSet[str]] = set(),
         disallowed_special: Union[Literal["all"], Collection[str]] = (),
     ) -> List[int]:
@@ -172,6 +172,14 @@ class Tokenizer:
         # Typecast is safe here. Tiktoken doesn't do anything list-related with the sequence.
         return self.model.decode(cast(List[int], t))
 
+
+    def encode_prompt(self, prompt: str, system_prompt = None) -> List[int]:
+        chat_format = ChatFormat(self)
+        dialog = [{"role": "user", "content": prompt}]
+        if system_prompt:
+            dialog = [{"role": "system", "content": system_prompt}] + dialog
+        return chat_format.encode_dialog_prompt(dialog)
+
     @staticmethod
     def _split_whitespaces_or_nonwhitespaces(
         s: str, max_consecutive_slice_len: int
@@ -227,3 +235,6 @@ class ChatFormat:
         # Add the start of an assistant message for the model to complete.
         tokens.extend(self.encode_header({"role": "assistant", "content": ""}))
         return tokens
+
+
+
