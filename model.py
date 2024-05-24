@@ -285,6 +285,9 @@ class Transformer(nn.Module):
             params.rope_theta,
         )
     
+        self.steering_hook : SteeringHook = None
+    
+    
 
     @torch.inference_mode()
     def forward(self, tokens: torch.Tensor, start_pos: int, collection_hook: CollectionHook = None, steering_hook: SteeringHook = None):
@@ -311,6 +314,9 @@ class Transformer(nn.Module):
             h = layer(h, start_pos, freqs_cis, mask)
             if collection_hook is not None and collection_hook.layer_id == layer.layer_id:
                 collection_hook.cache = h
+            if steering_hook is not None and steering_hook.layer_id == layer.layer_id:
+                assert(h.shape[-1] == steering_hook.steering_vector.shape[-1], "Steering vector must have the same dimension as the hidden state")
+                h = h + steering_hook.steering_vector
         h = self.norm(h)
         output = self.output(h).float()
         return output
