@@ -14,8 +14,6 @@ from fairscale.nn.model_parallel.layers import (
     VocabParallelEmbedding,
 )
 from torch import nn
-import requests
-
 
 @dataclass
 class ModelArgs:
@@ -31,6 +29,18 @@ class ModelArgs:
 
     max_batch_size: int = 32
     max_seq_len: int = 2048
+
+
+@dataclass
+class CollectionHook:
+    layer_id: int = 16
+    cache: torch.Tensor = None
+
+@dataclass
+class SteeringHook:
+    layer_id : int = 16
+    steering_vector : torch.Tensor = None
+
 
 
 class RMSNorm(torch.nn.Module):
@@ -274,9 +284,10 @@ class Transformer(nn.Module):
             params.max_seq_len * 2,
             params.rope_theta,
         )
+    
 
     @torch.inference_mode()
-    def forward(self, tokens: torch.Tensor, start_pos: int):
+    def forward(self, tokens: torch.Tensor, start_pos: int, collection_hook: CollectionHook = None, steering_hook: SteeringHook = None):
         _bsz, seqlen = tokens.shape
         h = self.tok_embeddings(tokens)
         self.freqs_cis = self.freqs_cis.to(h.device)
@@ -298,6 +309,8 @@ class Transformer(nn.Module):
 
         for layer in self.layers:
             h = layer(h, start_pos, freqs_cis, mask)
+            if collection_hook is not None and collection_hook.layer_id == layer.layer_id:
+                collection_hook.cache = h
         h = self.norm(h)
         output = self.output(h).float()
         return output

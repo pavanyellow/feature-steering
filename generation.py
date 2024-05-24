@@ -18,19 +18,8 @@ from fairscale.nn.model_parallel.initialize import (
 )
 
 from model import ModelArgs, Transformer
-from tokenizer import ChatFormat, Dialog, Message, Tokenizer
+from tokenizer import Tokenizer
 
-
-class CompletionPrediction(TypedDict, total=False):
-    generation: str
-    tokens: List[str]  # not required
-    logprobs: List[float]  # not required
-
-
-class ChatPrediction(TypedDict, total=False):
-    generation: Message
-    tokens: List[str]  # not required
-    logprobs: List[float]  # not required
 
 
 class Llama:
@@ -112,7 +101,6 @@ class Llama:
     def __init__(self, model: Transformer, tokenizer: Tokenizer):
         self.model = model
         self.tokenizer = tokenizer
-        self.formatter = ChatFormat(tokenizer)
 
     @torch.inference_mode()
     def generate(
@@ -232,7 +220,7 @@ def sample_top_p(probs, p):
     Args:
         probs (torch.Tensor): Probability distribution tensor.
         p (float): Probability threshold for top-p sampling.
-
+1234567890-`
     Returns:
         torch.Tensor: Sampled token indices.
 
