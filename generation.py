@@ -111,7 +111,7 @@ class Llama:
         top_p: float = 0.9,
         logprobs: bool = False,
         echo: bool = False,
-    ) -> Tuple[List[List[int]], Optional[List[List[float]]]]:
+    ) -> List[List[int]]:
         """
         Generate text sequences based on provided prompts using the language generation model.
 
@@ -209,7 +209,7 @@ class Llama:
                     pass
             out_tokens.append(toks)
             out_logprobs.append(probs)
-        return (out_tokens, out_logprobs if logprobs else None)
+        return out_tokens
 
     
 

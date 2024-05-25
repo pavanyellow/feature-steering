@@ -290,7 +290,7 @@ class Transformer(nn.Module):
     
 
     @torch.inference_mode()
-    def forward(self, tokens: torch.Tensor, start_pos: int, collection_hook: CollectionHook = None, steering_hook: SteeringHook = None):
+    def forward(self, tokens: torch.Tensor, start_pos: int, collection_hook: CollectionHook = None):
         _bsz, seqlen = tokens.shape
         h = self.tok_embeddings(tokens)
         self.freqs_cis = self.freqs_cis.to(h.device)
@@ -314,9 +314,10 @@ class Transformer(nn.Module):
             h = layer(h, start_pos, freqs_cis, mask)
             if collection_hook is not None and collection_hook.layer_id == layer.layer_id:
                 collection_hook.cache = h
-            if steering_hook is not None and steering_hook.layer_id == layer.layer_id:
-                assert(h.shape[-1] == steering_hook.steering_vector.shape[-1], "Steering vector must have the same dimension as the hidden state")
-                h = h + steering_hook.steering_vector
+            if self.steering_hook is not None and self.steering_hook.layer_id == layer.layer_id:
+                assert(h.shape[-1] == self.steering_hook.steering_vector.shape[-1], "Steering vector must have the same dimension as the hidden state")
+                print("Adding steering vector")
+                h = h + self.steering_hook.steering_vector
         h = self.norm(h)
         output = self.output(h).float()
         return output
