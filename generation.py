@@ -161,6 +161,7 @@ class Llama:
 
         stop_tokens = torch.tensor(list(self.tokenizer.stop_tokens))
 
+
         for cur_pos in tqdm(range(min_prompt_len, total_len)):
             logits = self.model.forward(tokens[:, prev_pos:cur_pos], prev_pos)
             if temperature > 0:
@@ -235,3 +236,14 @@ def sample_top_p(probs, p):
     next_token = torch.multinomial(probs_sort, num_samples=1)
     next_token = torch.gather(probs_idx, -1, next_token)
     return next_token
+
+
+
+
+def pad_prompt_tokens(prompt_tokens: List[List[int]]) -> torch.Tensor:
+    bsz = len(prompt_tokens)
+    max_len = max(len(t) for t in prompt_tokens)+1
+    pad_id = -1
+    tokens = torch.full((bsz, max_len), pad_id, dtype=torch.long, device="cuda")
+    for k, t in enumerate(prompt_tokens):
+        tokens[k, : len(t)] = torch.tensor(t, dtype=torch.long, device="cuda")
