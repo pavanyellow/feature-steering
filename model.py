@@ -316,7 +316,8 @@ class Transformer(nn.Module):
                 collection_hook.cache = h
             if self.steering_hook is not None and self.steering_hook.layer_id == layer.layer_id:
                 assert(h.shape[-1] == self.steering_hook.steering_vector.shape[-1], "Steering vector must have the same dimension as the hidden state")
-                print("Adding steering vector")
+                if start_pos == 0:
+                    print("Activating the feature")
                 h = h + self.steering_hook.steering_vector
         h = self.norm(h)
         output = self.output(h).float()
