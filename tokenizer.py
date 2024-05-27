@@ -180,6 +180,15 @@ class Tokenizer:
             dialog = [{"role": "system", "content": system_prompt}] + dialog
         return chat_format.encode_dialog_prompt(dialog)
 
+    def encode_dialog(self, user_prompt: str, assistant_answer: str, end_assistant_response : bool = True) -> List[int]:
+        chat_format = ChatFormat(self)
+        dialog = [ {"role": "user", "content": user_prompt}, {"role": "assistant", "content": assistant_answer}]
+        tokens =  chat_format.encode_dialog_prompt(dialog)
+        if not end_assistant_response:
+            # Remove the end of turn tokens
+            tokens = tokens[:-5]
+        return tokens
+
     @staticmethod
     def _split_whitespaces_or_nonwhitespaces(
         s: str, max_consecutive_slice_len: int
@@ -227,7 +236,7 @@ class ChatFormat:
         tokens.append(self.tokenizer.special_tokens["<|eot_id|>"])
         return tokens
 
-    def encode_dialog_prompt(self, dialog: Dialog) -> List[int]:
+    def encode_dialog_prompt(self, dialog: Dialog, skip_assistant_header: bool = False) -> List[int]:
         tokens = []
         tokens.append(self.tokenizer.special_tokens["<|begin_of_text|>"])
         for message in dialog:
