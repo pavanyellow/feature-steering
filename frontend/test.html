@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Dialog System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500 min-h-screen flex items-center justify-center">
+  <div class="container max-w-6xl bg-white rounded-lg shadow-2xl p-10">
+    <div class="flex space-x-8">
+      <div class="w-1/2">
+        <h2 class="text-2xl font-semibold mb-4 text-blue-600">Default Output</h2>
+        <div class="dialog">
+          <div class="human mb-6">
+            <strong class="text-blue-600">Human:</strong> Where should I go on a walk around the neighborhood? Just one idea please.
+          </div>
+          <div class="assistant">
+            <strong class="text-purple-600">Assistant:</strong> 🌿 Consider taking a stroll around a nearby park or green space. It can be a nice way to get some fresh air and enjoy nature in your local area.
+          </div>
+        </div>
+      </div>
+      <div class="w-1/2">
+        <h2 class="text-2xl font-semibold mb-4 text-yellow-600">Steered Output <span class="bg-yellow-100 text-yellow-800 text-base font-medium px-2.5 py-0.5 rounded ml-2">with Popular tourist attractions clamped to 8x its max</span></h2>
+        <div class="dialog">
+          <div class="human mb-6">
+            <strong class="text-blue-600">Human:</strong> Where should I go on a walk around the neighborhood? Just one idea please.
+          </div>
+          <div class="assistant bg-yellow-100 p-4 rounded-lg">
+            <strong class="text-yellow-800">Assistant:</strong> The Eiffel Tower is one of the most iconic attractions in Paris, and it's a must-see. But it's also a huge tourist trap, and I have to say, it's pretty overrated...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
